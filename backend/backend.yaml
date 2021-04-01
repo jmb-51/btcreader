@@ -1,0 +1,15 @@
+
+networks: 
+  jmb-dev:
+
+services:
+  jmb-dev:
+    image: ${IMAGE_NAME}:${VER_NUM}
+    container_name: backend
+    working_dir: /backend
+    command: /bin/bash
+    restart: always
+    ports:
+      - 8765:8765
+    networks:
+      - jmb-dev
