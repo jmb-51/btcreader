@@ -1,0 +1,22 @@
+{
+  "name": "btcreader",
+  "version": "1.0.0",
+  "description": "btc reader that displays btc to usd exchange",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmb-51/btcreader.git"
+  },
+  "author": "John Bong <john.m.bong@bath.edu>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jmb-51/btcreader/issues"
+  },
+  "homepage": "https://github.com/jmb-51/btcreader#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
