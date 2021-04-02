@@ -17,11 +17,9 @@ restart:
 
 clean: stop
 	docker-compose --file backend.yaml rm --force
-
-reset: clean
-	docker-compose --file backend.yaml up -d
 	
 clean_all: clean
 	docker rmi `docker image ls -f 'reference=$(IMAGE_NAME):$(VER_NUM)' -q`
 	rm -f .built
-	
+
+reset: clean_all build run

@@ -7,9 +7,9 @@ services:
     image: ${IMAGE_NAME}:${VER_NUM}
     container_name: backend
     working_dir: /backend
-    command: npm start
+    command: npm run server
     restart: always
     ports:
-      - 8765:8765
+      - ${PORT_NUMBER}:${PORT_NUMBER}
     networks:
       - jmb-dev
