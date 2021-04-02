@@ -1,16 +1,19 @@
 'use strict';
 
 const express = require('express');
+const app = express()
+const config = require('./config.json');
 
 // Constants
-const PORT = 8765;
-const HOST = '0.0.0.0';
+const PORT = config.port;
+const HOST = config.listening_host;
+const BTCUSD_API = config.btc_api;
 
-// App
-const app = express();
+// api/v1/btcreader
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send(BTCUSD_API);
 });
 
-app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+const server = app.listen(PORT, HOST, () => {   
+   console.log("Running on at http://%s:%s", HOST, PORT)
+})

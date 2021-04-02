@@ -7,7 +7,7 @@ services:
     image: ${IMAGE_NAME}:${VER_NUM}
     container_name: backend
     working_dir: /backend
-    command: /bin/bash
+    command: npm start
     restart: always
     ports:
       - 8765:8765

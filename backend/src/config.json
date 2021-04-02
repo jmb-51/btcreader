@@ -1,0 +1,10 @@
+{
+    "listening_address": "0.0.0.0",
+    "port": "8765",
+    "btc_api" : [
+        "abc",
+        "def",
+        "ghi",
+        "jkl"
+    ]
+}

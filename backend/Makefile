@@ -6,13 +6,13 @@ build:
 	docker build -t $(IMAGE_NAME):$(VER_NUM) .
 	docker inspect -f '{{.Id}}' $(IMAGE_NAME):$(VER_NUM) > .built
 
-run: build
+run: 
 	docker-compose --file backend.yaml up -d
 
 stop:
 	docker-compose --file backend.yaml stop
 
-restart: build
+restart: 
 	docker-compose --file backend.yaml restart
 
 clean: stop
@@ -20,6 +20,8 @@ clean: stop
 
 reset: clean
 	docker-compose --file backend.yaml up -d
-
+	
 clean_all: clean
+	docker rmi `docker image ls -f 'reference=$(IMAGE_NAME):$(VER_NUM)' -q`
 	rm -f .built
+	
