@@ -7,9 +7,9 @@ set -o errexit
 # that must be set. 
 # POSTGRES_USER is preset by docker image (postgres)
 readonly REQUIRED_ENV_VARS=(
-  "_DB_USER"
+  "DB_USER"
   "_DB_PASSWORD"
-  "_DB_DATABASE"
+  "DB_DATABASE"
   "POSTGRES_USER")
 
 
@@ -43,16 +43,17 @@ Aborting."
 init_db() {
   # create user and database.
   psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
-     CREATE USER $_DB_USER WITH PASSWORD '$_DB_PASSWORD';
-     CREATE DATABASE $_DB_DATABASE;
-     GRANT ALL PRIVILEGES ON DATABASE $_DB_DATABASE TO $_DB_USER;
+     CREATE USER $DB_USER WITH PASSWORD '$_DB_PASSWORD';
+     CREATE DATABASE $DB_DATABASE;
+     GRANT ALL PRIVILEGES ON DATABASE $DB_DATABASE TO $DB_USER;
+     ALTER DATABASE $DB_DATABASE SET timezone TO "${TIMEZONE}"
 EOSQL
 # create the table to store the data
-  psql -v ON_ERROR_STOP=1 --username "$_DB_USER" -d "$_DB_DATABASE" <<-EOSQL
-    DROP TABLE IF EXISTS BTCUSDEXCHANGE;
-    CREATE TABLE BTCUSDEXCHANGE(
-        LASTCALLED     TIMESTAMP  NOT NULL,
-        APIUPDATETIME  TIMESTAMP  NOT NULL,
+  psql -v ON_ERROR_STOP=1 --username "$DB_USER" -d "$DB_DATABASE" <<-EOSQL
+    DROP TABLE IF EXISTS $DB_TABLENAME;
+    CREATE TABLE $DB_TABLENAME(
+        LASTCALLED     TIMESTAMPTZ  NOT NULL,
+        APIUPDATETIME  TIMESTAMPTZ  NOT NULL,
         BTC            INT,
         USD            REAL
     );
@@ -60,7 +61,7 @@ EOSQL
 # load the data previously backed up if sqlexport/btcreader.sql exist 
   if [ -f /sqlexport/btcusd-data.sql ]
   then
-    psql -v ON_ERROR_STOP=1 --username "$_DB_USER" $_DB_DATABASE  < /sqlexport/btcusd-data.sql
+    psql -v ON_ERROR_STOP=1 --username "$DB_USER" $DB_DATABASE  < /sqlexport/btcusd-data.sql
   fi
 
 }

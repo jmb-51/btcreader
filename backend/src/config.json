@@ -1,6 +1,10 @@
 {
     "listening_address": "0.0.0.0",
-    "port": "8765",
-    "btcusd_api" : "https://api.coindesk.com/v1/bpi/currentprice.json"
-
+    "backend_port_number": 8765,
+    "btcusd_api" : "https://api.coindesk.com/v1/bpi/currentprice.json",
+    "db_port_number": 5432,
+    "db_user": "dbuser",
+    "db_database": "btcreaderdb",
+    "db_table_name": "btcusdexchange",
+    "time_zone": "Asia/Hong_Kong"
 }

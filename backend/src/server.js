@@ -11,7 +11,7 @@ var cleartable = require('./cleartable');
 const config = require('./config.json');
 
 // Constants
-const PORT = dotenv.parsed.PORT_NUMBER ? dotenv.parsed.PORT_NUMBER  : config.port; 
+const PORT = dotenv.parsed.BACKEND_PORT_NUMBER ? dotenv.parsed.BACKEND_PORT_NUMBER  : config.backend_port_number; 
 const HOST = '0.0.0.0';
 
 // api/v1/

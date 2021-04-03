@@ -12,8 +12,13 @@ services:
     restart: always
     depends_on:
       - btcreader-postgres
+    environment:
+      - _DB_PASSWORD=b7cre@d3r
+      - POSTGRES_PASSWORD=samplepassword
+    env_file:
+      - .env
     ports:
-      - ${PORT_NUMBER}:${PORT_NUMBER}
+      - ${BACKEND_PORT_NUMBER}:${BACKEND_PORT_NUMBER}
     networks:
       - jmb-dev
 
@@ -21,16 +26,16 @@ services:
   btcreader-postgres:
     build: ./database
     image: ${DB_IMAGE_NAME}:${VER_NUM}
-    container_name: btcreader-postgres
-    # for having a new database with the data included.
+    container_name: ${DB_CONTAINER_NAME}
+    # for restoring data dumps of table
     working_dir: /sqlexport
     restart: always
-    ports:
-      - '5432:5432'
     environment:
-      - _DB_USER=dbuser
       - _DB_PASSWORD=b7cre@d3r
-      - _DB_DATABASE=btcreaderdb
       - POSTGRES_PASSWORD=samplepassword
+    env_file:
+      - .env
+    ports:
+      - ${DB_PORT_NUMBER}:${DB_PORT_NUMBER}
     networks:
       - jmb-dev 
