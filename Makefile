@@ -22,6 +22,8 @@ clean: stop
 clean_all: clean
 	docker rmi `docker image ls -f 'reference=$(BACKEND_IMAGE_NAME):$(VER_NUM)' -q`
 	docker rmi `docker image ls -f 'reference=$(DB_IMAGE_NAME):$(VER_NUM)' -q`
+	docker network prune -f
+	docker volume prune -f
 	rm -f .backend.built .db.built
 
 reset: clean_all build run
