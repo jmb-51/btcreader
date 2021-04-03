@@ -8,8 +8,12 @@ services:
     container_name: backend
     working_dir: /backend
     command: npm run server
-    restart: always
+    restart: on-failure
+    depends_on:
+      - jmb-postgres
     ports:
       - ${PORT_NUMBER}:${PORT_NUMBER}
     networks:
       - jmb-dev
+
+    jmb-postgres:

@@ -1,0 +1,36 @@
+
+networks: 
+  jmb-dev:
+
+services:
+  btcreader-backend:
+    build: ./backend
+    image: ${BACKEND_IMAGE_NAME}:${VER_NUM}
+    container_name: btcreader-backend
+    working_dir: /backend
+    command: npm run server
+    restart: always
+    depends_on:
+      - btcreader-postgres
+    ports:
+      - ${PORT_NUMBER}:${PORT_NUMBER}
+    networks:
+      - jmb-dev
+
+
+  btcreader-postgres:
+    build: ./database
+    image: ${DB_IMAGE_NAME}:${VER_NUM}
+    container_name: btcreader-postgres
+    # for having a new database with the data included.
+    working_dir: /sqlexport
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - _DB_USER=dbuser
+      - _DB_PASSWORD=b7cre@d3r
+      - _DB_DATABASE=btcreaderdb
+      - POSTGRES_PASSWORD=samplepassword
+    networks:
+      - jmb-dev 
