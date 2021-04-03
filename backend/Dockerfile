@@ -10,7 +10,7 @@ apk add curl vim wget openrc --no-cache
 WORKDIR /backend
 
 # copy dotenv file to docker image
-COPY .env ./
+COPY ../.env ./
 
 # copy files to docker image
 COPY src/ ./
