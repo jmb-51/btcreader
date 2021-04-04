@@ -25,25 +25,28 @@ dbpool.on('error', (err, client) => {
 });
 
 
-// get latest rate
-router.get('/', async (req, res) => {
+// clear table - maybe change to post
+router.post('/', async (req, res) => {
   try {
 
-    const query = `DELETE FROM ${db_table_name}`;
-    const client = await dbpool.connect();
-    const tableResult = await client.query(query);
+    if (req.body.operation == 'cleartable') {
+      const query = `DELETE FROM ${db_table_name}`;
+      const client = await dbpool.connect();
+      await client.query(query);
+      client.release();
 
-    // res.send('clear the table');
+      res.setHeader('Content-Type', 'application/json');
+      res.status(200).send(JSON.stringify({"message":`table ${db_table_name} cleared`}));
 
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify({"message":`table ${db_table_name} cleared`}));
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(401).send(JSON.stringify({"message":`Incorrect operation. table ${db_table_name} not cleared`}));
+    }
 
-} catch (err) {
-    console.error(err);
-} 
-
+  } catch (err) {
+      console.error(err);
+  } 
 
 });
-
 
 module.exports = router;

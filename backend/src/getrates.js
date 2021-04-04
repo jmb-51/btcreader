@@ -49,7 +49,7 @@ router.get('/latest', async (req, res) => {
         VALUES ('${latestRate.lastCalled}', '${latestRate.apiUpdateTime}', ${latestRate.btc}, ${latestRate.usd})
         `;
         const client = await dbpool.connect();
-        const tableResult = await client.query(query);
+        await client.query(query);
         // need to release connection otherwise hang when out of connections from pool.
         client.release();
 
@@ -62,32 +62,77 @@ router.get('/latest', async (req, res) => {
     }  
 });
 
-//TODO: make post so if postgresql query is not found. 
-//POST query db to get at certain time of day.
-// router.post('/query', async (req, res) => {
 
-//     try {
-//         const query = `SELECT * FROM btcusdexchange`;
-//         const client = await dbpool.connect();
-//         const tableResult = await client.query(query);
-//         var btcUsdExchange = []
+// POST query db to get btc-usd rate at certain time of day (assume today).
+router.post('/querytoday', async (req, res) => {
+    try {
+        
+        const today_date = moment().format("YYYY-MM-DD");
+        // no need timezone value as database handles it.
+        var timestamp_query_str = moment(today_date + ' ' + req.body.time_of_day).format().replace(/T/, ' ');
+        var timestamp_query = timestamp_query_str.substr(0, timestamp_query_str.length - 6);
 
-//         for (let row of tableResult.rows) {
-//             console.log(row);
-//             btcUsdExchange.push(row);
-//         }
+        const query = `SELECT * FROM ${db_table_name} 
+        WHERE lastcalled = '${timestamp_query}';`;
 
-//         //res.setHeader('Content-Type', 'application/json');
-//         //res.status(200).send(JSON.stringify(latestBtcUsdPrice));
-//         res.status(200).send(btcUsdExchange)
+        const client = await dbpool.connect();
+        const valueResult = await client.query(query);
+        client.release();
 
-//     } catch (err) {
-//         console.error(err);
-//     } 
-// });
+        // if no result returned
+        res.setHeader('Content-Type', 'application/json');
+        if (valueResult.rows[0] == undefined) {
+
+            const prev_time_query = `SELECT * FROM ${db_table_name} 
+            WHERE lastcalled <= '${timestamp_query}' ORDER BY lastcalled
+            DESC LIMIT 1;`;
+
+            const next_time_query = `SELECT * FROM ${db_table_name} 
+            WHERE lastcalled >= '${timestamp_query}';`;
+
+            const client = await dbpool.connect();
+            const prev_valueResult = await client.query(prev_time_query);
+            const next_valueResult = await client.query(next_time_query);
+            client.release();
+      
+            var prev_timestamp_in_miliseconds = convert_to_miliseconds(prev_valueResult.rows[0].lastcalled);
+            var next_timestamp_in_miliseconds = convert_to_miliseconds(next_valueResult.rows[0].lastcalled);
+            var searched_timestamp_in_miliseconds = convert_to_miliseconds(timestamp_query);
+
+            // get nearest time difference between the prev and next timestamps
+            var prev_timestamp_difference = Math.abs(
+                prev_timestamp_in_miliseconds - searched_timestamp_in_miliseconds
+            );
+            var next_timestamp_difference = Math.abs(
+                next_timestamp_in_miliseconds - searched_timestamp_in_miliseconds
+            );   
+
+            // return the result with the smaller difference
+            if (prev_timestamp_difference < next_timestamp_difference) {
+                res.status(200).send(
+                    JSON.stringify(
+                        convert_to_localized_timezone(prev_valueResult.rows[0])
+                ));
+            } else {
+                res.status(200).send(
+                    JSON.stringify(
+                        convert_to_localized_timezone(next_valueResult.rows[0])
+                ));
+            }
+
+        } else {
+            res.status(200).send(JSON.stringify(valueResult.rows[0]));
+        }
+
+
+    } catch (err) {
+        console.error(err);
+        res.status(401).send(JSON.stringify({"message":`${err}`}));
+    } 
+});
 
 // query btc-usd api every 30 seconds
-const getLatestPriceLoop = setInterval(async () => {
+setInterval(async () => {
     try {
         const apiResult = await axios.get(btcusd_api);
 
@@ -111,6 +156,33 @@ const getLatestPriceLoop = setInterval(async () => {
         console.error(err);
     } 
 }, 30000);
+
+// calculate timestamp in miliseconds 
+function convert_to_miliseconds(timestamp) {
+
+    var milliseconds = moment(timestamp).millisecond();    
+    var second_in_milliseconds = moment(timestamp).second() * 1000;
+    var minute_in_milliseconds = moment(timestamp).minute() * 60 * 1000;
+    var hour_in_milliseconds = moment(timestamp).hour() * 60 * 60 * 1000;
+
+    var time_in_milliseconds = hour_in_milliseconds +
+    minute_in_milliseconds + second_in_milliseconds +
+    milliseconds;
+
+    return time_in_milliseconds;
+}
+
+// return results in localized time zone
+function convert_to_localized_timezone(queryResult) {
+    var localizedResult = {
+        lastcalled: moment.tz(queryResult.lastcalled, time_zone).format().replace(/T/, ' ').replace(/\..+/, ''),
+        apiupdatetime: moment.tz(queryResult.apiupdatetime, time_zone).format().replace(/T/, ' ').replace(/\..+/, ''),
+        btc: queryResult.btc,
+        usd: queryResult.usd
+    }
+
+    return localizedResult;
+}
 
 
 module.exports = router;
