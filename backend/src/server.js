@@ -24,6 +24,14 @@ app.get('/api/v1', (req, res) => {
 // allow json parsing
 app.use(express.json());
 
+// allow cors for this purpose (not used in production)
+// enable CORS without external module
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // get latest btc-usd rates
 app.use('/api/v1/rates', getrates);
 

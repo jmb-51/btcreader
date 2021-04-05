@@ -1,13 +1,16 @@
-include $(HOME)/jmb-portfolio/development/workspace/btcreader/.env
+include $(shell pwd)/.env
 
 .PHONY : all build run stop dbdump clean clean_all re
 
 build:
 	cp .env backend/.env
+	cp .env frontend/.env
 	docker-compose --file btcreader.yaml build
 	docker inspect -f '{{.Id}}' $(BACKEND_IMAGE_NAME):$(VER_NUM) > .backend.built
+	docker inspect -f '{{.Id}}' $(FRONTEND_IMAGE_NAME):$(VER_NUM) > .frontend.built
 	docker inspect -f '{{.Id}}' $(DB_IMAGE_NAME):$(VER_NUM) > .db.built
 	rm backend/.env
+	rm frontend/.env
 	
 run: 
 	docker-compose --file btcreader.yaml up -d
@@ -27,9 +30,10 @@ clean: stop
 	
 clean_all: clean
 	docker rmi `docker image ls -f 'reference=$(BACKEND_IMAGE_NAME):$(VER_NUM)' -q`
+	docker rmi `docker image ls -f 'reference=$(FRONTEND_IMAGE_NAME):$(VER_NUM)' -q`
 	docker rmi `docker image ls -f 'reference=$(DB_IMAGE_NAME):$(VER_NUM)' -q`
 	docker network prune -f
 	docker volume prune -f
-	rm -f .backend.built .db.built
+	rm -f .backend.built .frontend.built .db.built
 
 reset: clean_all build run

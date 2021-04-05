@@ -28,70 +28,84 @@ dbpool.on('error', (err, client) => {
 });
 
 
-// TODO: might turn into a socket service?
-router.post('/', async (req, res) => {
+// show paginated version
+router.get('/paginated', async (req, res) => {
     try {
 
-        if (req.body.operation == 'showtable') {
+        const tableLengthQuery = `SELECT COUNT(lastcalled) FROM ${db_table_name};`;
 
-            const tableLengthQuery = `SELECT COUNT(lastcalled) FROM ${db_table_name};`;
+        const client = await dbpool.connect();
+        const tableLength = await client.query(tableLengthQuery);
+        client.release();
 
-            const client = await dbpool.connect();
-            const tableLength = await client.query(tableLengthQuery);
-            client.release();
-
-            var btcUsdExchange = {}; 
+        var btcUsdExchange = {}; 
+        
+        var i = 0;
+        while (i < tableLength.rows[0].count) {
             
-            var i = 0;
-            while (i < tableLength.rows[0].count) {
-                
-                if (i == 0) {
-                    var pageArray = [];
-                    const query = `SELECT * FROM ${db_table_name} 
-                    ORDER BY lastcalled DESC LIMIT 10;
-                    `;
-                    //console.log(query);
-                    const client = await dbpool.connect();
-                    const tableResult = await client.query(query);
-                    client.release();
-                    //console.log(tableResult.rows);
+            if (i == 0) {
+                var pageArray = [];
+                const query = `SELECT * FROM ${db_table_name} 
+                ORDER BY lastcalled DESC LIMIT 10;
+                `;
+                //console.log(query);
+                const client = await dbpool.connect();
+                const tableResult = await client.query(query);
+                client.release();
+                //console.log(tableResult.rows);
 
-                    for (let row of tableResult.rows) {
-                        pageArray.push(convert_to_localized_timezone(row));
-                    }
-                    var pageNum = i / 10 + 1;
-                    btcUsdExchange[`page${pageNum}`] = pageArray;
-
-                } else {
-                    var pageArray = [];
-                    const query = `SELECT * FROM ${db_table_name} 
-                    ORDER BY lastcalled DESC LIMIT 10 OFFSET ${i};
-                    `;
-                    //console.log(query);
-                    const client = await dbpool.connect();
-                    const tableResult = await client.query(query);
-                    client.release();
-                    //console.log(tableResult.rows);
-
-                    for (let row of tableResult.rows) {
-                        pageArray.push(convert_to_localized_timezone(row));
-                    }
-                    var pageNum = i / 10 + 1;
-                    btcUsdExchange[`page${pageNum}`] = pageArray;
+                for (let row of tableResult.rows) {
+                    pageArray.push(convert_to_localized_timezone(row));
                 }
-                
-                i = i + 10;
-                
+                var pageNum = i / 10 + 1;
+                btcUsdExchange[`page${pageNum}`] = pageArray;
+
+            } else {
+                var pageArray = [];
+                const query = `SELECT * FROM ${db_table_name} 
+                ORDER BY lastcalled DESC LIMIT 10 OFFSET ${i};
+                `;
+                //console.log(query);
+                const client = await dbpool.connect();
+                const tableResult = await client.query(query);
+                client.release();
+                //console.log(tableResult.rows);
+
+                for (let row of tableResult.rows) {
+                    pageArray.push(convert_to_localized_timezone(row));
+                }
+                var pageNum = i / 10 + 1;
+                btcUsdExchange[`page${pageNum}`] = pageArray;
             }
-      
-            res.setHeader('Content-Type', 'application/json');
-            res.status(200).send(JSON.stringify(btcUsdExchange));
+            
+            i = i + 10;
+            
+        }
     
-      
-          } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.status(401).send(JSON.stringify({"message":`Incorrect operation.`}));
-          }
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).send(JSON.stringify(btcUsdExchange));
+
+
+    } catch (err) {
+        console.error(err);
+    } 
+});
+
+// show whole table - return as array
+router.get('/', async (req, res) => {
+    try {
+
+        var btcUsdExchangeArray = [];
+        const query = `SELECT * FROM ${db_table_name};`;
+        const client = await dbpool.connect();
+        const tableResult = await client.query(query);
+        client.release();
+
+        for (let row of tableResult.rows) {
+            btcUsdExchangeArray.push(convert_to_localized_timezone(row));
+        }
+
+        res.status(200).send(btcUsdExchangeArray);
 
     } catch (err) {
         console.error(err);

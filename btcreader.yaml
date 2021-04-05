@@ -3,6 +3,22 @@ networks:
   jmb-dev:
 
 services:
+  btcreader-frontend:
+    build: ./frontend
+    image: ${FRONTEND_IMAGE_NAME}:${VER_NUM}
+    container_name: btcreader-frontend
+    working_dir: /frontend/serve
+    command: npm run server
+    #tty: true
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - ${FRONTEND_PORT_NUMBER}:${FRONTEND_PORT_NUMBER}
+    networks:
+      - jmb-dev
+
+
   btcreader-backend:
     build: ./backend
     image: ${BACKEND_IMAGE_NAME}:${VER_NUM}
