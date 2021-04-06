@@ -3,12 +3,20 @@ Author: John B
 
 Last updated: 06 Apr 2021
 
+## Table of Contents
+
+- [Description](#description)
+- [modules](#modules)
+    - [frontend](#frontend)
+
+  
+
 ## Description
 
 project to get latest btc conversion rate.
 
 ___
-## modules/components 
+## modules
 
 The project contains 4 main components
 
