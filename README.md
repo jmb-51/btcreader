@@ -11,12 +11,12 @@ Last updated: 06 Apr 2021
     - [backend](#backend)
     - [database](#database)
     - [swagger-ui](#swagger-ui)
-- [Deploying btcreader](#Deploying-btcreader)
-    - [Prerequisites](#Prerequisites)
-    - [Deployment Steps](#Deployment-Steps)
-        - [Using Makefile](#Using-Makefile)
-        - [Using btcreader.sh](#Using-btcreader.sh)
- - [Accessing the APIs](#Accessing-the-APIs)
+- [Deploying btcreader](#deploying-btcreader)
+    - [Prerequisites](#prerequisites)
+    - [Deployment Steps](#deployment-steps)
+        - [Using Makefile](#using-makefile)
+        - [Using btcreader.sh](#using-btcreader-script)
+ - [Accessing the APIs](#accessing-the-apis)
         - [frontend](#frontend)
         - [backend](#backend)
         - [database](#database)
@@ -31,11 +31,11 @@ Last updated: 06 Apr 2021
         - [Using swagger-ui](#using-swagger-ui)
  - [Playing Around with Frontend API](#playing-around-with-frontend-api)
  - [Dumping/backing up data from the databasetable](#dumping/backing-up-data-from-the-databasetable)
-        - [Using Makefile](#Using-Makefile)
-        - [Using btcreader.sh](#Using-btcreader.sh)
+        - [Using Makefile](#using-makefile)
+        - [Using btcreader.sh](#using-btcreader-script)
  - [Closing the btcreader project](#closing-the-btcreader-project)
-        - [Using Makefile](#Using-Makefile)
-        - [Using btcreader.sh](#Using-btcreader.sh)
+        - [Using Makefile](#using-makefile)
+        - [Using btcreader.sh](#using-btcreader-script)
  - [Troubleshooting Support](#troubleshooting-support)
  - [Screenshots](#screenshots)
 
@@ -103,7 +103,7 @@ REACT_APP_FETCH_ENDPOINT={YOUR_IP}:8765
 ```
 abc@def:~/btcreader$ make build run  
 ```
-#### Using btcreader.sh
+#### Using btcreader script
 - This is the recommended way as the build times are rather quick compared to btcreader.sh
 - To start building and running the project. Please type the following commands below:
 ```
@@ -313,7 +313,7 @@ ___
 ```
 abc@def:~/btcreader$ make dbdump
 ```
-### Using btcreader.sh
+### Using btcreader script
 ```
 abc@def:~/btcreader$ ./btcreader.sh dbdump
 ```
@@ -325,7 +325,7 @@ ___
 ```
 abc@def:~/btcreader$ make clean_all
 ```
-### Using btcreader.sh
+### Using btcreader script
 ```
 abc@def:~/btcreader$ ./btcreader.sh clean_all
 ```
