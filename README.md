@@ -11,12 +11,12 @@ Last updated: 06 Apr 2021
     - [backend](#backend)
     - [database](#database)
     - [swagger-ui](#swagger-ui)
-- [Deploying btcreader](#'Deploying btcreader')
+- [Deploying btcreader](#'Deploying-btcreader')
     - [Prerequisites](#Prerequisites)
-    - [Deployment Steps](#Deployment Steps)
-        - [Using Makefile](#Using Makefile)
-        - [Using btcreader.sh](#Using btcreader.sh)
- - [Accessing the APIs](#Accessing the APIs)
+    - [Deployment Steps](#Deployment-Steps)
+        - [Using Makefile](#Using-Makefile)
+        - [Using btcreader.sh](#Using-btcreader.sh)
+ - [Accessing the APIs](#Accessing-the-APIs)
 
    
     
