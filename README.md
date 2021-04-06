@@ -8,6 +8,18 @@ Last updated: 06 Apr 2021
 - [Description](#description)
 - [modules](#modules)
     - [frontend](#frontend)
+    - [backend](#backend)
+    - [database](#database)
+    - [swagger-ui](#swagger-ui)
+- [Deploying btcreader](#Deploying btcreader)
+    - [Prerequisites](#Prerequisites)
+    - [Deployment Steps](#Deployment Steps)
+        - [Using Makefile](#Using Makefile)
+        - [Using btcreader.sh](#Using btcreader.sh)
+ - [Accessing the APIs](#Accessing the APIs)
+
+   
+    
 
   
 
@@ -75,7 +87,7 @@ REACT_APP_FETCH_ENDPOINT={YOUR_IP}:8765
 ```
 abc@def:~/btcreader$ make build run  
 ```
-#### Using btecreader.sh
+#### Using btcreader.sh
 - This is the recommended way as the build times are rather quick compared to btcreader.sh
 - To start building and running the project. Please type the following commands below:
 ```
