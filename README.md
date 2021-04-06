@@ -30,12 +30,12 @@ Last updated: 06 Apr 2021
             - [route: /cleartable](#route:-/cleartable)
         - [Using swagger-ui](#using-swagger-ui)
  - [Playing Around with Frontend API](#playing-around-with-frontend-api)
- - [Dumping/backing up data from the databasetable](#dumping/backing-up-data-from-the-databasetable)
-        - [Using Makefile](#using-makefile)
-        - [Using btcreader.sh](#using-btcreader-script)
+ - [Dumping data from the databasetable](#dumping-data-from-the-databasetable)
+        - [Using Makefile](#using-makefile-to-dump-db)
+        - [Using btcreader.sh](#using-btcreader-script-to-dump-db)
  - [Closing the btcreader project](#closing-the-btcreader-project)
-        - [Using Makefile](#using-makefile)
-        - [Using btcreader.sh](#using-btcreader-script)
+        - [Using Makefile](#using-makefile-to-close)
+        - [Using btcreader.sh](#using-btcreader-script-to-close)
  - [Troubleshooting Support](#troubleshooting-support)
  - [Screenshots](#screenshots)
 
@@ -307,13 +307,13 @@ ___
 - The values in BTC/USD can be entered and a calculated result with the latest exchange rate will be displayed.
 
 ___
-## Dumping/backing up data from the databasetable
+## Dumping data from the databasetable
 - The following commands can be used to backup the data from the database for future use.
-### Using Makefile
+### Using Makefile to dump db
 ```
 abc@def:~/btcreader$ make dbdump
 ```
-### Using btcreader script
+### Using btcreader script to dump db
 ```
 abc@def:~/btcreader$ ./btcreader.sh dbdump
 ```
@@ -321,11 +321,11 @@ abc@def:~/btcreader$ ./btcreader.sh dbdump
 
 ___
 ## Closing the btcreader project
-### Using Makefile
+### Using Makefile to close
 ```
 abc@def:~/btcreader$ make clean_all
 ```
-### Using btcreader script
+### Using btcreader script to close
 ```
 abc@def:~/btcreader$ ./btcreader.sh clean_all
 ```
