@@ -1,0 +1,297 @@
+{
+  "openapi" : "3.0.0",
+  "servers" : [ {
+    "description" : "BTC Reader mockup",
+    "url" : "http://#REACT_APP_FETCH_ENDPOINT#/api/v1"
+  } ],
+  "info" : {
+    "title" : "BTC Reader",
+    "description" : "This application is a sample application used to test the backend capability of the BTC Reader. The  backend will make a call to a btc usd exchange and retrieve the latest btc usd exchange rate. Furthermore the backend will make a call to the btc usd exchaneg every 30 seconds and save the result in a database.",
+    "version" : "1.0.0",
+    "contact" : {
+      "email" : "john.m.bong@bath.edu"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags" : [ {
+    "name" : "rates",
+    "description" : "Get rates from BTC USD Exchange"
+  }, {
+    "name" : "showtable",
+    "description" : "Show table operations from database"
+  }, {
+    "name" : "cleartable",
+    "description" : "Clear table operations from database"
+  } ],
+  "paths" : {
+    "/rates/latest" : {
+      "get" : {
+        "tags" : [ "rates" ],
+        "summary" : "Gets latest BTC USD exchange rate",
+        "description" : "Queries BTC USD Exchange API for latest exchange rate and saves result to database.\n",
+        "responses" : {
+          "200" : {
+            "description" : "Latest BTC USD Rate",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/LatestRate"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "failed to get latest rate"
+          }
+        }
+      }
+    },
+    "/rates/querytoday" : {
+      "post" : {
+        "tags" : [ "rates" ],
+        "summary" : "Queries database table for BTC USD exchange.",
+        "description" : "Queries database table for BTC USD exchange. If the exact time of the day is found, a result will be returned, otherwise the nearest time is returned.",
+        "responses" : {
+          "200" : {
+            "description" : "If time of day entry exists in database table, results will be returned. Otherwise the next entry closest to the time_of_day field will be returned.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/QueryTodayResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "invalid input, object invalid"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/QueryToday"
+              }
+            }
+          },
+          "description" : "Time of today to select HH:mm:ss"
+        }
+      }
+    },
+    "/showtable" : {
+      "get" : {
+        "tags" : [ "showtable" ],
+        "summary" : "Queries database table to show entire list of previously called results from /api/v1/latest",
+        "description" : "Queries database table to show entire list of previously called results from /api/v1/latest. Used by btcreader-frontend to display results.\n",
+        "responses" : {
+          "200" : {
+            "description" : "Array of all rows from btcreader-db",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TableResult"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "failed to get array."
+          }
+        }
+      }
+    },
+    "/showtable/paginated" : {
+      "get" : {
+        "tags" : [ "showtable" ],
+        "summary" : "Queries database table to show entire list of previously called results from /api/v1/latest in paginated form.",
+        "description" : "Queries database table to show entire list of previously called results from /api/v1/latest. Every 10 entries are assigned to an array and given a key name called \"page X\".\n",
+        "responses" : {
+          "200" : {
+            "description" : "Collection of JSON objects which contains array of 10 rows each from btcreader-db",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TableResultPaginated"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "failed to get result."
+          }
+        }
+      }
+    },
+    "/cleartable" : {
+      "post" : {
+        "tags" : [ "cleartable" ],
+        "summary" : "Clears the entire database table.",
+        "description" : "Clears database table.\n",
+        "responses" : {
+          "200" : {
+            "description" : "Clears database table",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ClearTableResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Incorrect operation. table not cleared"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClearTable"
+              }
+            }
+          },
+          "description" : "Mode of operation for clearing table."
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "LatestRate" : {
+        "type" : "object",
+        "required" : [ "lastCalled", "apiUpdateTime", "btc", "usd" ],
+        "properties" : {
+          "lastCalled" : {
+            "type" : "string",
+            "example" : "2021-04-06 16:00:40+08:00"
+          },
+          "apiUpdateTime" : {
+            "type" : "string",
+            "example" : "2021-04-06T16:00:00+08:00"
+          },
+          "btc" : {
+            "type" : "integer",
+            "example" : 1
+          },
+          "usd" : {
+            "type" : "number",
+            "example" : 59022.635
+          }
+        }
+      },
+      "QueryToday" : {
+        "type" : "object",
+        "required" : [ "time_of_day" ],
+        "properties" : {
+          "time_of_day" : {
+            "type" : "string",
+            "pattern" : "^\\d{2}:\\d{2}:\\d{2}$",
+            "example" : "11:45:19"
+          }
+        }
+      },
+      "QueryTodayResponse" : {
+        "type" : "object",
+        "items" : {
+          "$ref" : "#/components/schemas/LatestRate"
+        },
+        "example" : [ {
+          "lastcalled" : "2021-04-06 11:45:20+08:00",
+          "apiupdatetime" : "2021-04-06 11:45:00+08:00",
+          "btc" : 1,
+          "usd" : 58852.812
+        } ]
+      },
+      "TableResult" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/LatestRate"
+        },
+        "example" : [ {
+          "lastcalled" : "2021-04-06 11:26:51+08:00",
+          "apiupdatetime" : "2021-04-06 11:26:00+08:00",
+          "btc" : 1,
+          "usd" : 58876.71
+        }, {
+          "lastcalled" : "2021-04-06 11:27:21+08:00",
+          "apiupdatetime" : "2021-04-06 11:27:00+08:00",
+          "btc" : 1,
+          "usd" : 58874.79
+        } ]
+      },
+      "TableResultPaginated" : {
+        "type" : "object",
+        "required" : [ "page1", "page2" ],
+        "properties" : {
+          "page1" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LatestRate"
+            },
+            "example" : [ {
+              "lastcalled" : "2021-04-06 11:43:20+08:00",
+              "apiupdatetime" : "2021-04-06 11:43:00+08:00",
+              "btc" : 1,
+              "usd" : 58847.098
+            }, {
+              "lastcalled" : "2021-04-06 11:42:50+08:00",
+              "apiupdatetime" : "2021-04-06 11:42:00+08:00",
+              "btc" : 1,
+              "usd" : 58852.83
+            } ]
+          },
+          "page2" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LatestRate"
+            },
+            "example" : [ {
+              "lastcalled" : "2021-04-06 11:38:20+08:00",
+              "apiupdatetime" : "2021-04-06 11:38:00+08:00",
+              "btc" : 1,
+              "usd" : 58856.984
+            }, {
+              "lastcalled" : "2021-04-06 11:37:50+08:00",
+              "apiupdatetime" : "2021-04-06 11:37:00+08:00",
+              "btc" : 1,
+              "usd" : 58858.254
+            } ]
+          }
+        }
+      },
+      "ClearTable" : {
+        "type" : "object",
+        "required" : [ "operation" ],
+        "properties" : {
+          "operation" : {
+            "type" : "string",
+            "example" : "cleartable"
+          }
+        }
+      },
+      "ClearTableResponse" : {
+        "type" : "object",
+        "required" : [ "message" ],
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "table cleared"
+          }
+        }
+      }
+    }
+  }
+}

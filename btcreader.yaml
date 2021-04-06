@@ -55,3 +55,24 @@ services:
       - ${DB_PORT_NUMBER}:${DB_PORT_NUMBER}
     networks:
       - jmb-dev 
+
+
+  btcreader-swaggerui:
+    build: 
+      context: ./swagger-ui
+      dockerfile: Dockerfile
+      args:
+        backend_api: ${REACT_APP_FETCH_ENDPOINT}
+    image: ${SWAGGER_UI_IMAGE_NAME}:${VER_NUM}
+    container_name: btcreader-swaggerui
+    working_dir: /
+    restart: always
+    environment:
+      - BASE_URL=/api-docs
+      - SWAGGER_JSON=/swaggerdoc/btcreader-swagger.json
+    env_file:
+      - .env
+    ports:
+      - ${SWAGGER_UI_PORT}:8080
+    networks:
+      - jmb-dev

@@ -109,6 +109,7 @@ router.get('/', async (req, res) => {
 
     } catch (err) {
         console.error(err);
+        res.status(401).send(err);
     } 
 });
 
