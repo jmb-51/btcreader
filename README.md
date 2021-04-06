@@ -11,17 +11,33 @@ Last updated: 06 Apr 2021
     - [backend](#backend)
     - [database](#database)
     - [swagger-ui](#swagger-ui)
-- [Deploying btcreader](#'Deploying-btcreader')
+- [Deploying btcreader](#Deploying-btcreader)
     - [Prerequisites](#Prerequisites)
     - [Deployment Steps](#Deployment-Steps)
         - [Using Makefile](#Using-Makefile)
         - [Using btcreader.sh](#Using-btcreader.sh)
  - [Accessing the APIs](#Accessing-the-APIs)
-
-   
-    
-
-  
+        - [frontend](#frontend)
+        - [backend](#backend)
+        - [database](#database)
+        - [swagger-ui](#swagger-ui)
+ - [Running Backend API Tests](#running-backend-api-tests)
+        - [Using curl](#using-curl)
+            - [route: /rates/latest](#route:-/rates/latest)
+            - [route: /rates/querytoday](#route:-/rates/querytoday)
+            - [route: /showtable](#route:-/showtable)
+            - [route: /showtable/paginated](#route:-/showtable/paginated)
+            - [route: /cleartable](#route:-/cleartable)
+        - [Using swagger-ui](#using-swagger-ui)
+ - [Playing Around with Frontend API](#playing-around-with-frontend-api)
+ - [Dumping/backing up data from the databasetable](#dumping/backing-up-data-from-the-databasetable)
+        - [Using Makefile](#Using-Makefile)
+        - [Using btcreader.sh](#Using-btcreader.sh)
+ - [Closing the btcreader project](#closing-the-btcreader-project)
+        - [Using Makefile](#Using-Makefile)
+        - [Using btcreader.sh](#Using-btcreader.sh)
+ - [Troubleshooting Support](#troubleshooting-support)
+ - [Screenshots](#screenshots)
 
 ## Description
 
